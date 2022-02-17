@@ -27,13 +27,7 @@ module.exports = (sequelize) => {
         },
         city: {
             type: DataTypes.STRING,
-        },
-        branch_id: {
-            type: DataTypes.INTEGER,
-        },
-        emp_id: {
-            type: DataTypes.INTEGER,
-        },
+        }, 
         check_out: {
             type: DataTypes.DATE,
         },

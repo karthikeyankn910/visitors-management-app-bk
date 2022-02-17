@@ -21,10 +21,7 @@ module.exports = (sequelize) => {
         },
         city: {
             type: DataTypes.STRING,
-        },
-        branch_id: {
-            type: DataTypes.INTEGER,
-        },  
+        }, 
     }, 
     {
         freezeTableName: true,
