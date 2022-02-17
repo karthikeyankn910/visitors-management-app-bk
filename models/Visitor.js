@@ -21,7 +21,7 @@ module.exports = (sequelize) => {
         },
         organization: {
             type: DataTypes.STRING,
-        },
+        }, 
         designation: {
             type: DataTypes.STRING,
         },
