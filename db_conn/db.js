@@ -17,28 +17,43 @@ db.Visitor = Visitor(sequelize);
 db.Branch = Branch(sequelize);
 db.Employee = Employee(sequelize);
 
-db.Branch.hasMany(db.Visitor);
+db.Branch.hasMany(db.Visitor, {
+    foreignKey: {
+        name: "branch_id",
+        type: DataTypes.INTEGER,
+    }
+}); 
 db.Visitor.belongsTo(db.Branch, {
-    // foreignKey: {
-    //     name: "branch_id",
-    //     type: DataTypes.INTEGER,
-    // }
+    foreignKey: {
+        name: "branch_id",
+        type: DataTypes.INTEGER,
+    } 
 });
 
-db.Branch.hasMany(db.Employee);
+db.Branch.hasMany(db.Employee, {
+    foreignKey: {
+        name: "branch_id",
+        type: DataTypes.INTEGER,
+    }
+});
 db.Employee.belongsTo(db.Branch, {
-    // foreignKey: {
-    //     name: "branch_id",
-    //     type: DataTypes.INTEGER,
-    // }
+    foreignKey: {
+        name: "branch_id",
+        type: DataTypes.INTEGER,
+    }
 });
 
-db.Employee.hasMany(db.Visitor);
+db.Employee.hasMany(db.Visitor, {
+    foreignKey: {
+        name: "emp_id", 
+        type: DataTypes.INTEGER,
+    }
+});
 db.Visitor.belongsTo(db.Employee, {
-    // foreignKey: {
-    //     name: "emp_id", 
-    //     type: DataTypes.INTEGER,
-    // }
+    foreignKey: {
+        name: "emp_id", 
+        type: DataTypes.INTEGER,
+    }
 });
 
 
