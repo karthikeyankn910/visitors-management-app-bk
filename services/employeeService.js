@@ -17,9 +17,9 @@ module.exports.createEmployee = (employee) => {
     });
 }
 
-//get a employee
-module.exports.getAllEmployees = () => {
-    return Employee.findAll()
+//get all employees
+module.exports.getAllEmployees = (conditions) => {
+    return Employee.findAll(conditions)
             .then(allEmployeees => {
                 return allEmployeees;
             })

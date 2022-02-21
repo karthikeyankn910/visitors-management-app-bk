@@ -23,9 +23,9 @@ module.exports.createVisitor = (visitor) => {
     });
 }
 
-//get a visitor
-module.exports.getAllVisitors = () => {
-    return Visitor.findAll()
+//get all visitors
+module.exports.getAllVisitors = (conditions) => {
+    return Visitor.findAll(conditions)
             .then(allVisitores => {
                 return allVisitores;
             })

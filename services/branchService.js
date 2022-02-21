@@ -13,7 +13,7 @@ module.exports.createBranch = (branch) => {
     });
 }
 
-//get a branch
+//get all branches
 module.exports.getAllBranches = () => {
     return Branch.findAll()
             .then(allBranches => {
