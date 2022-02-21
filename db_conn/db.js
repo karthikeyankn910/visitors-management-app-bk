@@ -3,6 +3,8 @@ const Visitor = require('../models/Visitor');
 const Branch = require('./../models/Branch');
 const Employee = require('./../models/Employee');
 
+
+//initialize sequelize to connect with db
 const sequelize = new Sequelize('visitors_management', 'admin5', 'admin5', {
     host: 'localhost',
     dialect: 'postgres',
@@ -17,6 +19,8 @@ db.Visitor = Visitor(sequelize);
 db.Branch = Branch(sequelize);
 db.Employee = Employee(sequelize);
 
+
+//one to many relation (branch -> visitor)
 db.Branch.hasMany(db.Visitor, {
     foreignKey: {
         name: "branch_id",
@@ -31,7 +35,7 @@ db.Visitor.belongsTo(db.Branch, {
 });
 
 
-
+//one to many relation (branch -> employee)
 db.Branch.hasMany(db.Employee, {
     foreignKey: {
         name: "branch_id",
@@ -46,7 +50,7 @@ db.Employee.belongsTo(db.Branch, {
 });
 
 
-
+//one to many relation (employee -> visitor)
 db.Employee.hasMany(db.Visitor, {
     foreignKey: {
         name: "emp_id", 

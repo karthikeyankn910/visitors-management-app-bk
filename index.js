@@ -7,7 +7,7 @@ const branchRoute = require('./routes/branchRoute');
 const employeeRoute = require('./routes/employeeRoute');
 const visitorRoute = require('./routes/visitorRoute');
 
-
+//initializing express
 const app = express();
 
 //middlewares for bodyparser
@@ -37,9 +37,9 @@ app.get('/', (req, res) => {
 
 
 //middlewares for each models
-app.use('/branches', branchRoute);
-app.use('/employees', employeeRoute);
-app.use('/visitors', visitorRoute);
+app.use('/api/v1/branches', branchRoute);
+app.use('/api/v1/employees', employeeRoute);
+app.use('/api/v1/visitors', visitorRoute);
 
 
 

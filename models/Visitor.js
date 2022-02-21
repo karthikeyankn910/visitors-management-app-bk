@@ -34,17 +34,17 @@ module.exports = (sequelize) => {
             type: DataTypes.STRING,
         }, 
         check_out: {
-            type: DataTypes.DATE,
+            type: DataTypes.STRING,
         },
         check_in: {
-            type: DataTypes.DATE,
+            type: DataTypes.STRING,
         },
         other_info: {
             type: DataTypes.JSONB,
         },
     }, 
     {
-        freezeTableName: true,
+        freezeTableName: true, 
         createdAt: true,
         updatedAt: true,
     }); 
