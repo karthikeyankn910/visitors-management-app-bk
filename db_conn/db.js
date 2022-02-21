@@ -30,6 +30,8 @@ db.Visitor.belongsTo(db.Branch, {
     } 
 });
 
+
+
 db.Branch.hasMany(db.Employee, {
     foreignKey: {
         name: "branch_id",
@@ -42,6 +44,8 @@ db.Employee.belongsTo(db.Branch, {
         type: DataTypes.INTEGER,
     }
 });
+
+
 
 db.Employee.hasMany(db.Visitor, {
     foreignKey: {
