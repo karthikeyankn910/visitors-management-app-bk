@@ -1,7 +1,7 @@
 const express = require('express');
 const branchService = require('../services/branchService');
 const { validate, ValidationError, Joi } = require('express-validation');
-const { Branch } = require('../db_conn/db');
+const { Branch, Employee } = require('../db_conn/db');
 
 
 //initializing router
@@ -104,7 +104,7 @@ router.delete('/:branch_id',
     checkExistOrNot,
     (req, res) => {
         branchService.deleteBranch(req.params.branch_id)
-        .then(branch => {
+        .then(branch => { 
             res.status(200).json({"message": "branch deleted successfully", "branch": branch});
         }).catch(err => {
             res.status(400).json({"error": err});

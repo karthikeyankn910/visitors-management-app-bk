@@ -6,9 +6,24 @@ const cors = require('cors');
 const branchRoute = require('./routes/branchRoute');
 const employeeRoute = require('./routes/employeeRoute');
 const visitorRoute = require('./routes/visitorRoute');
+const rateLimit = require('express-rate-limit');
+
 
 //initializing express
 const app = express();
+
+//initializing rate limiter
+const limiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 10,
+    message: "Too many request from this IP address", 
+    statusCode: 429,
+    skipSuccessfulRequests: true,
+});
+
+
+//middleware for rate limitation
+app.use(limiter);
 
 //middlewares for bodyparser
 app.use(bodyParser.json());
