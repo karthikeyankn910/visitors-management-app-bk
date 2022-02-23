@@ -7,6 +7,14 @@ const branchRoute = require('./routes/branchRoute');
 const employeeRoute = require('./routes/employeeRoute');
 const visitorRoute = require('./routes/visitorRoute');
 const rateLimit = require('express-rate-limit');
+const cluster = require('cluster');
+const process = require('process');
+const os = require('os') 
+
+ 
+const numCpus = os.cpus().length;
+
+
 
 
 //initializing express
@@ -45,21 +53,34 @@ sequelize.authenticate()
 sequelize.sync({}); 
 
 
-//sample GET request
+//sample GET request for cluster and testing....ignore it
 app.get('/', (req, res) => {
-    res.send("Yes it's working...");
+    res.send(`Yes it's working by ${process.pid}`);
+    cluster.worker.kill();
 });
 
 
-//middlewares for each models
-app.use('/api/v1/branches', branchRoute);
+//middlewares for each models 
+app.use('/api/v1/branches', branchRoute); 
 app.use('/api/v1/employees', employeeRoute);
 app.use('/api/v1/visitors', visitorRoute);
 
 
 
+if (cluster.isMaster) { 
+    for (let i = 0; i < numCpus; i++) { 
+        cluster.fork();
+    }
+    cluster.on('exit', (worker, code, signal) => {
+        console.log(`worker ${worker.process.pid} is killed`);
+        cluster.fork();
+    })
+}
+else{ 
+    app.listen(process.env.PORT, () => {
+        console.log("Server", process.pid, "listening at " + process.env.PORT);
+    }); 
+}
 
 
-app.listen(process.env.PORT, () => {
-    console.log("Server listening at " + process.env.PORT);
-})
+
