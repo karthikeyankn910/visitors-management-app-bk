@@ -2,7 +2,7 @@ const express = require('express');
 const visitorService = require('../services/visitorService');
 const { validate, ValidationError, Joi } = require('express-validation'); 
 const download = require('../export_logic/getData');
-
+const { tempVisitors } = require('../temp_store/temporaryStore');
 
 
 //initializing router
@@ -106,6 +106,7 @@ router.post('/',
             branch_id: req.body.branch_id,
             emp_id: req.body.emp_id,
         }).then(visitor => {
+            tempVisitors.push(visitor);
             res.status(201).json({"message": "visitor added succesfully", "visitor": visitor});
         }).catch(err => {
             res.status(400).json({"error": err});
@@ -120,7 +121,7 @@ router.get('/',
     getQueryCondition,
     (req, res) => {  
         visitorService.getAllVisitors(req.conditions)
-            .then(allVisitors => {
+            .then(allVisitors => { 
                 res.status(200).json({"visitors": allVisitors});
             })
             .catch(err => {
@@ -142,7 +143,7 @@ router.get('/download', (req, res) => {
 //get visitor by id GET
 router.get('/:visitor_id', 
     checkExistOrNot,
-    (req, res) => { 
+    (req, res) => {  
         res.status(200).json({"visitor": req.visitor});
          
 });

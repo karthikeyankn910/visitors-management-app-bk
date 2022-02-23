@@ -7,7 +7,7 @@ module.exports.branchFields = branchFields = [
 module.exports.visitorFields = this.visitorFields = [
     { label: "visitor ID", value: "id" },
     { label: "name", value: "name" },
-    { label: "email", value: "city" },
+    { label: "email", value: "email" },
     { label: "phone", value: "phone" },
     { label: "designation", value: "designation" },
     { label: "purpose", value: "purpose" },
@@ -21,7 +21,7 @@ module.exports.visitorFields = this.visitorFields = [
 module.exports.employeeFields = this.employeeFields = [
     { label: "employee ID", value: "id" },
     { label: "name", value: "name" },
-    { label: "email", value: "city" },
+    { label: "email", value: "email" },
     { label: "phone", value: "phone" },
     { label: "designation", value: "designation" }, 
     { label: "city", value: "city" }, 

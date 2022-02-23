@@ -9,16 +9,17 @@ const visitorRoute = require('./routes/visitorRoute');
 const rateLimit = require('express-rate-limit');
 const cluster = require('cluster');
 const process = require('process');
-const os = require('os') 
-
- 
-const numCpus = os.cpus().length;
-
+const os = require('os');
+const cron = require('node-cron'); 
+const sgMail = require('@sendgrid/mail');
+const { sendMail, setEmailBody } = require('./mail_config/emailSend');
+const { tempVisitors } = require('./temp_store/temporaryStore');
 
 
 
 //initializing express
 const app = express();
+
 
 //initializing rate limiter
 const limiter = rateLimit({
@@ -32,6 +33,7 @@ const limiter = rateLimit({
 
 //middleware for rate limitation
 app.use(limiter);
+
 
 //middlewares for bodyparser
 app.use(bodyParser.json());
@@ -65,22 +67,44 @@ app.use('/api/v1/branches', branchRoute);
 app.use('/api/v1/employees', employeeRoute);
 app.use('/api/v1/visitors', visitorRoute);
 
+ 
+
+//get number of cpu cores in our machine
+const numCpus = os.cpus().length;  
 
 
-if (cluster.isMaster) { 
-    for (let i = 0; i < numCpus; i++) { 
-        cluster.fork();
-    }
-    cluster.on('exit', (worker, code, signal) => {
-        console.log(`worker ${worker.process.pid} is killed`);
-        cluster.fork();
-    })
-}
-else{ 
+//if mastser cluster then create worker instances
+// if (cluster.isMaster) { 
+//     for (let i = 0; i < numCpus; i++) { 
+//         cluster.fork();
+//     }
+//     cluster.on('exit', (worker, code, signal) => {
+//         console.log(`worker ${worker.process.pid} is killed`);
+//         cluster.fork();
+//     });
+// }
+// else{ 
     app.listen(process.env.PORT, () => {
         console.log("Server", process.pid, "listening at " + process.env.PORT);
     }); 
-}
+// }
+
+ 
 
 
+//set api key for sgMail
+sgMail.setApiKey(process.env.SG_API_KEY); 
+ 
+ 
 
+
+// scheduling cron job for email send 
+// 0 21 */1 * 1-5
+cron.schedule('*/20 * * * * *', async () => { 
+    console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"); 
+    let message = await setEmailBody("sample check", tempVisitors);
+    await sendMail(message);  
+});
+
+
+ 
