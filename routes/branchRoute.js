@@ -1,7 +1,7 @@
 const express = require('express');
 const branchService = require('../services/branchService');
-const { validate, ValidationError, Joi } = require('express-validation');
-const { Branch, Employee } = require('../db_conn/db');
+const { validate, ValidationError, Joi } = require('express-validation'); 
+const download = require('../export_logic/getData');
 
 
 //initializing router
@@ -19,20 +19,18 @@ const bodyValidation = {
  
 
 var checkExistOrNot = (req, res, next) => {
-    Branch.findOne({
-        where: {
-            id: req.params.branch_id
-        }
-    }).then(branch => {
-        if (branch) {
-            req.branch = branch;
-            next();
-            return;
-        }
-        res.status(404).json({"message": "Branch not exists"});
-    }).catch(err => {
-        res.status(400).json({"error": err});
-    })
+    const { branch_id } = req.params;
+    branchService.getBranchById(branch_id)
+        .then(branch => {
+            if (branch) {
+                req.branch = branch;
+                next();
+                return;
+            }
+            res.status(404).json({"message": "Branch not exists"});
+        }).catch(err => {
+            res.status(400).json({"error": err});
+        })
 }
 
 
@@ -72,12 +70,21 @@ router.get('/', (req, res) => {
 });
 
 
-//get branch by id GET
+
+// download  branch table as csv file
+router.get('/download', (req, res) => {
+    download(req, res, "branch");  
+});
+
+
+
+// get branch by id GET
 router.get('/:branch_id', 
     checkExistOrNot,
     (req, res) => { 
         res.status(200).json({"branch": req.branch}); 
 });
+
 
 
 
@@ -110,6 +117,8 @@ router.delete('/:branch_id',
             res.status(400).json({"error": err});
         });
 });
+
+
 
 
 

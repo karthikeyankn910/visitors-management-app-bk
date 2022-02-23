@@ -1,8 +1,7 @@
 const express = require('express'); 
 const employeeService = require('../services/employeeService');
-const { validate, ValidationError, Joi } = require('express-validation');
-const { Employee } = require('../db_conn/db')
-
+const { validate, ValidationError, Joi } = require('express-validation'); 
+const download = require('../export_logic/getData');
 
 //initializing router
 const router = express.Router();
@@ -33,10 +32,8 @@ const queryValidation = {
 }
 
 //getting conditions according to the query string from the request
-var getQueryCondition = (req, res, next) => {
-    let city = req.query.city; 
-    let designation = req.query.designation;
-    let branch_id = req.query.branch_id; 
+var getQueryCondition = (req, res, next) => {  
+    let { city, designation, branch_id } = req.query;
 
     let conditions = {};
     conditions.where = {};
@@ -52,21 +49,21 @@ var getQueryCondition = (req, res, next) => {
 
 
 var checkExistOrNot = (req, res, next) => {
-    Employee.findOne({
-        where: {
-            id: req.params.employee_id
-        }
-    }).then(employee => {
-        if (employee) {
-            req.employee = employee;
-            next();
-            return;
-        }
-        res.status(404).json({"message": "Employee not exists"});
-    }).catch(err => {
-        res.status(400).json({"error": err});
-    })
+    const { employee_id } = req.params;
+    employeeService.getEmployeeById(employee_id)
+        .then(employee => {
+            if (employee) {
+                req.employee = employee;
+                next();
+                return;
+            }
+            res.status(404).json({"message": "Employee not exists"});
+        }).catch(err => {
+            res.status(400).json({"error": err});
+        })
 }
+
+
 
 
 
@@ -114,6 +111,16 @@ router.get('/',
                 res.status(400).json({"error": err});
             });
 });
+
+
+
+
+// download employee table as csv file
+router.get('/download', (req, res) => {
+    download(req, res, "employee");  
+});
+
+
 
 
 //get employee by id GET

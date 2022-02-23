@@ -1,7 +1,9 @@
 const express = require('express');
 const visitorService = require('../services/visitorService');
-const { validate, ValidationError, Joi } = require('express-validation');
-const { Visitor } = require('../db_conn/db');
+const { validate, ValidationError, Joi } = require('express-validation'); 
+const download = require('../export_logic/getData');
+
+
 
 //initializing router
 const router = express.Router();
@@ -39,12 +41,8 @@ const queryValidation = {
 }
 
 //getting conditions according to the query string from the request
-var getQueryCondition = (req, res, next) => {
-    let city = req.query.city;
-    let purpose = req.query.purpose;  
-    let organization = req.query.organization;
-    let branch_id = req.query.branch_id;
-    let emp_id = req.query.emp_id;
+var getQueryCondition = (req, res, next) => { 
+    let {city, purpose, organization, branch_id, emp_id } = req.query;
 
     let conditions = {};
     conditions.where = {};
@@ -60,21 +58,19 @@ var getQueryCondition = (req, res, next) => {
 }
 
 
-var checkExistOrNot = (req, res, next) => {
-    Visitor.findOne({
-        where: {
-            id: req.params.visitor_id
-        }
-    }).then(visitor => {
-        if (visitor) {
-            req.visitor = visitor;
-            next();
-            return;
-        }
-        res.status(404).json({"message": "Visitor not exists"});
-    }).catch(err => {
-        res.status(400).json({"error": err});
-    })
+var checkExistOrNot = (req, res, next) => { 
+    const {visitor_id} = req.params; 
+    visitorService.getVisitorById(visitor_id)
+        .then(visitor => {
+            if (visitor) {
+                req.visitor = visitor;
+                next();
+                return;
+            }
+            res.status(404).json({"message": "Visitor not exists"});
+        }).catch(err => {
+            res.status(400).json({"error": err});
+        })
 }
 
 
@@ -133,6 +129,16 @@ router.get('/',
 });
 
 
+
+
+// download visitor table as csv file
+router.get('/download', (req, res) => {
+    download(req, res, "visitor");  
+});
+
+
+
+
 //get visitor by id GET
 router.get('/:visitor_id', 
     checkExistOrNot,
@@ -140,6 +146,8 @@ router.get('/:visitor_id',
         res.status(200).json({"visitor": req.visitor});
          
 });
+
+ 
 
 
 
