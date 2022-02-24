@@ -1,0 +1,25 @@
+html 
+    body
+        p Hi,
+        if (data.length == 1)
+            p There is only #{data.length} new visitor today...
+        else if (data.length > 1) 
+            p There are #{data.length} new visitors today... 
+        else    
+            p There are no new visitors...
+        
+        table(border=1, cellspacing=0, cellpadding=8)
+            - const headers = ['Visitor ID', 'Name', 'Email', 'Phone', 'Purpose', 'Designation', 'Company', 'City', 'Check-in', 'Check-out', 'Other-infos'];
+            tr
+                each val in headers
+                    th= val
+            each val in data
+                tr 
+                    each v, k in val.dataValues   
+                        if k == 'other_info'
+                            td
+                                each a, b in v
+                                    span= b+":"+a+"|"
+                        if k != 'createdAt' && k != 'updatedAt' && k != 'emp_id' && k!='branch_id' && k!= 'other_info'
+                            td= v 
+
