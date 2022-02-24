@@ -2,10 +2,11 @@ const { Sequelize, DataTypes } = require('sequelize');
 const Visitor = require('../models/Visitor');
 const Branch = require('./../models/Branch');
 const Employee = require('./../models/Employee');
+const dotenv = require('dotenv').config();
 
 
 //initialize sequelize to connect with db
-const sequelize = new Sequelize('visitors_management', 'admin5', 'admin5', {
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
     host: 'localhost',
     dialect: 'postgres',
 })

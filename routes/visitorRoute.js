@@ -133,7 +133,7 @@ router.get('/',
 
 
 // download visitor table as csv file
-router.get('/download', (req, res) => {
+router.get('/download', async (req, res) => {
     download(req, res, "visitor");  
 });
 

@@ -12,7 +12,7 @@ const process = require('process');
 const os = require('os');
 const cron = require('node-cron'); 
 const sgMail = require('@sendgrid/mail');
-const { sendMail, setEmailBody } = require('./mail_config/emailSend');
+const { setEmailBody } = require('./mail_config/emailSend');
 const { tempVisitors } = require('./temp_store/temporaryStore');
 
 
@@ -100,7 +100,7 @@ sgMail.setApiKey(process.env.SG_API_KEY);
 
 // scheduling cron job for email send 
 // 0 21 */1 * 1-5
-cron.schedule('*/20 * * * * *', async () => { 
+cron.schedule('0 21 */1 * 1-5', async () => { 
     console.log("+++++++++++++++++++++++++++CRON+++++++++++++++++++++++++++++++++"); 
     await setEmailBody("sample check", tempVisitors); 
     let n = tempVisitors.length;
