@@ -101,9 +101,12 @@ sgMail.setApiKey(process.env.SG_API_KEY);
 // scheduling cron job for email send 
 // 0 21 */1 * 1-5
 cron.schedule('*/20 * * * * *', async () => { 
-    console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"); 
-    let message = await setEmailBody("sample check", tempVisitors);
-    await sendMail(message);  
+    console.log("+++++++++++++++++++++++++++CRON+++++++++++++++++++++++++++++++++"); 
+    await setEmailBody("sample check", tempVisitors); 
+    let n = tempVisitors.length;
+    for (let i = 0; i < n; i++) {
+        tempVisitors.pop();
+    }
 });
 
 
