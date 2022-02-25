@@ -49,8 +49,8 @@ sequelize.authenticate()
     .then(() => {
         console.log("DB connected.");
     })
-    .catch(() => {
-        console.log("DB connection error");
+    .catch((err) => {
+        console.log("DB connection error", err);
     });
 sequelize.sync({}); 
 
@@ -73,21 +73,21 @@ app.use('/api/v1/visitors', visitorRoute);
 const numCpus = os.cpus().length;  
 
 
-//if mastser cluster then create worker instances
-// if (cluster.isMaster) { 
-//     for (let i = 0; i < numCpus; i++) { 
-//         cluster.fork();
-//     }
-//     cluster.on('exit', (worker, code, signal) => {
-//         console.log(`worker ${worker.process.pid} is killed`);
-//         cluster.fork();
-//     });
-// }
-// else{ 
+// if mastser cluster then create worker instances
+if (cluster.isMaster) { 
+    for (let i = 0; i < numCpus; i++) { 
+        cluster.fork();
+    }
+    cluster.on('exit', (worker, code, signal) => {
+        console.log(`worker ${worker.process.pid} is killed`);
+        cluster.fork();
+    });
+}
+else{ 
     app.listen(process.env.PORT, () => {
         console.log("Server", process.pid, "listening at " + process.env.PORT);
     }); 
-// }
+}
 
  
 
