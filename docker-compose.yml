@@ -1,0 +1,27 @@
+version: '3.7'
+services:
+  app: #this service is for my node app
+    build: .
+    depends_on:
+      - postgres #postgres service(below service)
+    ports:
+      - "4000:4000" #actual port in nodejs 4000 and mapped to 4000 in container
+    environment: 
+      #original credentials for my machine
+      - DB_USERNAME=admin5
+      - DB_PASSWORD=admin5
+      - DB_SCHEMA=visitors_management
+      - DB_HOST=postgres
+      - PORT=4000
+    volumes:
+      #WORKDIR in container
+      - ./:/usr/src/app/
+
+  postgres:
+    image: postgres 
+    environment:
+      - POSTGRES_USER=admin5
+      - POSTGRES_PASSWORD=admin5
+      - POSTGRES_DB=visitors_management  
+    ports:
+      - "35432:5432" 
