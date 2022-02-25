@@ -74,40 +74,40 @@ const numCpus = os.cpus().length;
 
 
 // if mastser cluster then create worker instances
-if (cluster.isMaster) { 
-    for (let i = 0; i < numCpus; i++) { 
-        cluster.fork();
-    }
-    cluster.on('exit', (worker, code, signal) => {
-        console.log(`worker ${worker.process.pid} is killed`);
-        cluster.fork();
-    });
-}
-else{ 
+// if (cluster.isMaster) { 
+//     for (let i = 0; i < numCpus; i++) { 
+//         cluster.fork();
+//     }
+//     cluster.on('exit', (worker, code, signal) => {
+//         console.log(`worker ${worker.process.pid} is killed`);
+//         cluster.fork();
+//     });
+// }
+// else{ 
     app.listen(process.env.PORT, () => {
         console.log("Server", process.pid, "listening at " + process.env.PORT);
     }); 
-}
+// }
 
  
 
-
+ 
 //set api key for sgMail
-sgMail.setApiKey(process.env.SG_API_KEY); 
+// sgMail.setApiKey(process.env.SG_API_KEY); 
  
  
 
 
 // scheduling cron job for email send 
 // 0 21 */1 * 1-5
-cron.schedule('0 21 */1 * 1-5', async () => { 
-    console.log("+++++++++++++++++++++++++++CRON+++++++++++++++++++++++++++++++++"); 
-    await setEmailBody("sample check", tempVisitors); 
-    let n = tempVisitors.length;
-    for (let i = 0; i < n; i++) {
-        tempVisitors.pop();
-    }
-});
+// cron.schedule('0 21 */1 * 1-5', async () => { 
+//     console.log("+++++++++++++++++++++++++++CRON+++++++++++++++++++++++++++++++++"); 
+//     await setEmailBody("sample check", tempVisitors); 
+//     let n = tempVisitors.length;
+//     for (let i = 0; i < n; i++) {
+//         tempVisitors.pop();
+//     }
+// });
 
 
  
