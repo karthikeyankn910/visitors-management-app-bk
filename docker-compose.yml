@@ -1,5 +1,13 @@
 version: '3.7'
 services:
+
+  redis:
+    image: redis
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "6379:6379"
+
   app: #this service is for my node app
     build: .
     depends_on:
@@ -13,6 +21,9 @@ services:
       - DB_SCHEMA=visitors_management
       - DB_HOST=postgres
       - PORT=4000
+      - REDIS_URL=redis:6479
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     volumes:
       #WORKDIR in container
       - ./:/usr/src/app/

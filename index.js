@@ -13,7 +13,10 @@ const os = require('os');
 const cron = require('node-cron'); 
 const sgMail = require('@sendgrid/mail');
 const { setEmailBody } = require('./mail_config/emailSend');
-const { tempVisitors } = require('./temp_store/temporaryStore');
+const { tempVisitors } = require('./temp_store/temporaryStore'); 
+const {client} = require('./redis_conn/redisConnection');
+
+
 
 
 
@@ -48,11 +51,13 @@ app.use(cors({ origin: "http://localhost:3000"}));
 sequelize.authenticate()
     .then(() => {
         console.log("DB connected.");
+        client.connect();
     })
     .catch((err) => {
         console.log("DB connection error", err);
     });
-sequelize.sync({}); 
+// sequelize.sync({}); 
+
 
 
 //sample GET request for cluster and testing....ignore it
@@ -61,12 +66,15 @@ app.get('/', (req, res) => {
     cluster.worker.kill();
 });
 
+ 
+
 
 //middlewares for each models 
 app.use('/api/v1/branches', branchRoute); 
 app.use('/api/v1/employees', employeeRoute);
 app.use('/api/v1/visitors', visitorRoute);
 
+ 
  
 
 //get number of cpu cores in our machine
@@ -110,4 +118,3 @@ const numCpus = os.cpus().length;
 // });
 
 
- 
