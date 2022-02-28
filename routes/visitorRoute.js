@@ -3,10 +3,13 @@ const visitorService = require('../services/visitorService');
 const { validate, ValidationError, Joi } = require('express-validation'); 
 const download = require('../export_logic/getData');
 const { tempVisitors } = require('../temp_store/temporaryStore');
-
+const Queue = require('bull');
+const { client } = require('../redis_conn/redisConnection');
 
 //initializing router
 const router = express.Router();
+
+
 
 
 
@@ -115,6 +118,7 @@ router.post('/',
 
 
 
+
 //get all visitors GET
 router.get('/', 
     validate(queryValidation,{},{}),
@@ -131,18 +135,76 @@ router.get('/',
 
 
 
+const csvQueue = new Queue('csv-export', {
+    redis: {
+        host: process.env.REDIS_HOST,
+        port: process.env.REDIS_PORT
+    }
+});  
+csvQueue.process(async (job, done) => {   
+    try {
+        console.log("PROCESS");
+        const allVisitors = await visitorService.getAllVisitors();   
+        if (allVisitors) {
+            done(null, {status: false, result: allVisitors});
+        } else {
+            done(null, {status: true, result: "Error occured"});
+        }  
+    }
+    catch(err) {
+        done(null, {status: true, result: err});
+    }
+}); 
+
+
 
 // download visitor table as csv file
-router.get('/download', async (req, res) => {
-    download(req, res, "visitor");  
+router.get('/download',  async (req, res) => {  
+    await csvQueue.add({}, {
+        removeOnComplete: true,
+        removeOnFail: true,  
+        attemps: 1,
+        limiter: {
+            max: 3,
+            duration: 10000
+        }
+    });   
+    csvQueue.on("completed", (err, data) => {   
+        download(req, res, 'visitor', data.result); 
+    }); 
 });
+  
 
 
+
+ 
+
+router.get('/recent', async (req, res) => {
+    try { 
+        let alreadyExists = await client.get('recent-visits' ); 
+        if (alreadyExists) {
+            console.log("From cache");
+            res.json(JSON.parse(alreadyExists));
+            return;
+        } 
+        await visitorService.getAllVisitors({
+            limit: 3,
+            order: [['createdAt', 'DESC']]
+        }).then(async (recentVisitors) => {  
+            client.setEx('recent-visits', 15, JSON.stringify(recentVisitors));
+            console.log("From req");
+            res.json(recentVisitors); 
+        });
+    } catch(err) {
+        res.json({"error": err});
+    }
+})
+ 
 
 
 //get visitor by id GET
 router.get('/:visitor_id', 
-    checkExistOrNot,
+    checkExistOrNot, 
     (req, res) => {  
         res.status(200).json({"visitor": req.visitor});
          
