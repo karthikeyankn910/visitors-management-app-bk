@@ -117,7 +117,10 @@ router.get('/',
 
 // download employee table as csv file
 router.get('/download', (req, res) => {
-    download(req, res, "employee");  
+    employeeService.getAllEmployees()
+        .then(all => {
+            download(req, res, "employee", all);  
+        })
 });
 
 

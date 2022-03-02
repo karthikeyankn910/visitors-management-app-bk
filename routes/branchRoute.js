@@ -73,7 +73,10 @@ router.get('/', (req, res) => {
 
 // download  branch table as csv file
 router.get('/download', (req, res) => {
-    download(req, res, "branch");  
+    branchService.getAllBranches()
+        .then(all => {
+            download(req, res, 'branch', all);
+        })
 });
 
 

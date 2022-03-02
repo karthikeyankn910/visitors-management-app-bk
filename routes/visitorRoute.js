@@ -5,6 +5,7 @@ const download = require('../export_logic/getData');
 const { tempVisitors } = require('../temp_store/temporaryStore');
 const Queue = require('bull');
 const { client } = require('../redis_conn/redisConnection');
+const {Visitor} = require('./../db_conn/db');
 
 //initializing router
 const router = express.Router();
@@ -163,13 +164,17 @@ csvQueue.process(async (job, done) => {
 
 // download visitor table as csv file
 router.get('/download',  async (req, res) => {  
-    console.log("DF")
-    await csvQueue.add({name: "karthik"}, {});   
-    csvQueue.on("completed", async (err, data) => {   
-        console.log("DONE");
-        await download(req, res, 'visitor', data.result);  
-        res.end();
-    });  
+    // console.log("DF")
+    // await csvQueue.add({name: "karthik"}, {});   
+    // csvQueue.on("completed", async (err, data) => {   
+    //     console.log("DONE");
+    //     await download(req, res, 'visitor', data.result);  
+    //     res.end();
+    // });  
+    visitorService.getAllVisitors()
+        .then(all => { 
+            download(req, res, 'visitor', all)
+        })
 });
   
 
