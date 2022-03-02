@@ -22,7 +22,7 @@ const bodyValidation = {
         phone: Joi.string(),
         purpose: Joi.string(),
         designation: Joi.string(),
-        organization: Joi.string(),
+        organization: Joi.string(), 
         city: Joi.string().required().min(3),
         check_in: Joi.string(),
         check_out: Joi.any().empty(),
@@ -141,15 +141,18 @@ const csvQueue = new Queue('csv-export', {
         port: process.env.REDIS_PORT
     }
 });  
+
 csvQueue.process(async (job, done) => {   
-    try {
+    try { 
         console.log("PROCESS");
-        const allVisitors = await visitorService.getAllVisitors();   
-        if (allVisitors) {
-            done(null, {status: false, result: allVisitors});
-        } else {
-            done(null, {status: true, result: "Error occured"});
-        }  
+        visitorService.getAllVisitors()
+            .then(allVisitors => { 
+                if (allVisitors) {
+                    done(null, {status: false, result: allVisitors});
+                } else {
+                    done(null, {status: true, result: "Error occured"});
+                }  
+            })   
     }
     catch(err) {
         done(null, {status: true, result: err});
@@ -160,18 +163,13 @@ csvQueue.process(async (job, done) => {
 
 // download visitor table as csv file
 router.get('/download',  async (req, res) => {  
-    await csvQueue.add({}, {
-        removeOnComplete: true,
-        removeOnFail: true,  
-        attemps: 1,
-        limiter: {
-            max: 3,
-            duration: 10000
-        }
-    });   
-    csvQueue.on("completed", (err, data) => {   
-        download(req, res, 'visitor', data.result); 
-    }); 
+    console.log("DF")
+    await csvQueue.add({name: "karthik"}, {});   
+    csvQueue.on("completed", async (err, data) => {   
+        console.log("DONE");
+        await download(req, res, 'visitor', data.result);  
+        res.end();
+    });  
 });
   
 
@@ -188,6 +186,7 @@ router.get('/recent', async (req, res) => {
             return;
         } 
         await visitorService.getAllVisitors({
+            attributes: ['id', 'name', 'purpose', 'organization'],
             limit: 3,
             order: [['createdAt', 'DESC']]
         }).then(async (recentVisitors) => {  

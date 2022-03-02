@@ -6,6 +6,7 @@ const cors = require('cors');
 const branchRoute = require('./routes/branchRoute');
 const employeeRoute = require('./routes/employeeRoute');
 const visitorRoute = require('./routes/visitorRoute');
+const adminRoute = require('./routes/adminRoute');
 const rateLimit = require('express-rate-limit');
 const cluster = require('cluster');
 const process = require('process');
@@ -14,10 +15,8 @@ const cron = require('node-cron');
 const sgMail = require('@sendgrid/mail');
 const { setEmailBody } = require('./mail_config/emailSend');
 const { tempVisitors } = require('./temp_store/temporaryStore'); 
-const {client} = require('./redis_conn/redisConnection');
-
-
-
+const {client} = require('./redis_conn/redisConnection'); 
+const { verifyToken } = require('./verify_authorization/verifyAuth');
 
 
 //initializing express
@@ -56,7 +55,7 @@ sequelize.authenticate()
     .catch((err) => {
         console.log("DB connection error", err);
     });
-// sequelize.sync({}); 
+sequelize.sync({}); 
 
 
 
@@ -70,10 +69,11 @@ app.get('/', (req, res) => {
 
 
 //middlewares for each models 
-app.use('/api/v1/branches', branchRoute); 
-app.use('/api/v1/employees', employeeRoute);
-app.use('/api/v1/visitors', visitorRoute);
-
+app.use('/api/v1/admin', adminRoute);
+app.use('/api/v1/branches', verifyToken, branchRoute); 
+app.use('/api/v1/employees', verifyToken, employeeRoute);
+app.use('/api/v1/visitors', verifyToken, visitorRoute);
+ 
  
  
 
@@ -92,7 +92,7 @@ const numCpus = os.cpus().length;
 //     });
 // }
 // else{ 
-    app.listen(process.env.PORT, () => {
+    app.listen(process.argv[2] || process.env.PORT, () => {
         console.log("Server", process.pid, "listening at " + process.env.PORT);
     }); 
 // }
@@ -102,7 +102,7 @@ const numCpus = os.cpus().length;
  
 //set api key for sgMail
 // sgMail.setApiKey(process.env.SG_API_KEY); 
- 
+  
  
 
 

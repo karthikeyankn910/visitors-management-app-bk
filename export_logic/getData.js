@@ -26,13 +26,12 @@ const download = async (req, res, modelName, retrieveData) => {
     else { 
         fields = employeeFields;
         // data = await employeeService.getAllEmployees();
-        data = retrieveData;
-
+        data = retrieveData;   
         fileName = 'employee.csv';
     } 
     return downloadResource(res, fileName, fields, data);  
 }
 
+ 
 
-
-module.exports = download;
+module.exports = download; 

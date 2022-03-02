@@ -7,10 +7,12 @@ services:
       - ALLOW_EMPTY_PASSWORD=yes
     ports:
       - "6379:6379"
+    command: redis-server --appendonly yes
 
   app: #this service is for my node app
     build: .
     depends_on:
+      - redis
       - postgres #postgres service(below service)
     ports:
       - "4000:4000" #actual port in nodejs 4000 and mapped to 4000 in container
@@ -21,8 +23,8 @@ services:
       - DB_SCHEMA=visitors_management
       - DB_HOST=postgres
       - PORT=4000
-      - REDIS_URL=redis:6479
-      - REDIS_HOST=redis
+      - REDIS_URL=redis:6379 
+      - REDIS_HOST=redis 
       - REDIS_PORT=6379
     volumes:
       #WORKDIR in container
