@@ -2,7 +2,12 @@ const { Sequelize, DataTypes } = require('sequelize');
 const Visitor = require('../models/Visitor');
 const Branch = require('./../models/Branch');
 const Employee = require('./../models/Employee');
-const dotenv = require('dotenv').config();
+const Admin = require('./../models/Admin');
+const dotenv = require('dotenv')
+
+
+
+dotenv.config();
 
 
 //initialize sequelize to connect with db
@@ -19,6 +24,8 @@ db.sequelize = sequelize;
 db.Visitor = Visitor(sequelize);
 db.Branch = Branch(sequelize);
 db.Employee = Employee(sequelize);
+db.Admin = Admin(sequelize);
+
 
 
 //one to many relation (branch -> visitor)
