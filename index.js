@@ -34,7 +34,7 @@ const limiter = rateLimit({
 
 
 //middleware for rate limitation
-app.use(limiter);
+// app.use(limiter); 
 
 
 //middlewares for bodyparser
@@ -44,6 +44,11 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 //middleware for cors policy
 app.use(cors({ origin: "http://localhost:3000"}));
+
+
+//setting pug view engine to express app
+app.set('view engine', 'pug');
+app.set('views', './components/html');
 
 
 //database authentication
@@ -66,6 +71,14 @@ app.get('/', (req, res) => {
 });
 
  
+
+
+app.get('/api/v1/download', (req, res) => {
+    const datas = {
+        models: ['visitors', 'branches', 'employees'],
+    }
+    res.render('downloadPage', {datas});
+});
 
 
 //middlewares for each models 
