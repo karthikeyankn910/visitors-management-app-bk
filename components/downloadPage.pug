@@ -1,0 +1,20 @@
+html
+    head
+        title Visitors management 
+    body   
+        button(id='login-btn') login
+
+        p select one of the model to export it as CSV format 
+
+        select(id='model-list')
+            each val in datas.models 
+                option(value=val)= val
+
+        br
+
+        button(id='view-btn') view
+        button(id='export-btn') export
+
+        div(id='db-data')
+        script  
+            include script.js 
