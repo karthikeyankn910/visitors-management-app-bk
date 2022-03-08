@@ -4,13 +4,21 @@ const { validate, ValidationError, Joi } = require('express-validation');
 const download = require('../export_logic/getData');
 const { tempVisitors } = require('../temp_store/temporaryStore');
 const Queue = require('bull');
-const { client } = require('../redis_conn/redisConnection');
-const {Visitor} = require('./../db_conn/db');
+const { client } = require('../redis_conn/redisConnection'); 
+
+const firebaseInit = require('../firebase_configs/firebaseInit');
+
+const admin = require('firebase-admin');
+
+
 
 //initializing router
 const router = express.Router();
 
 
+
+
+firebaseInit();
 
 
 
@@ -171,6 +179,21 @@ router.get('/download',  async (req, res) => {
     //     await download(req, res, 'visitor', data.result);  
     //     res.end();
     // });  
+    // var topic = 'general'; 
+    // var message = {
+    //     notification: {
+    //         title: 'Hello messasge from node',
+    //         body: 'hey there, how are you?'
+    //     },
+    //     topic: topic
+    // };  
+    // admin.messaging().send(message)
+    //     .then((response) => { 
+    //         console.log('Successfully sent message:', response);
+    //     })
+    //     .catch((error) => {
+    //         console.log('Error sending message:', error);
+    //     });
     visitorService.getAllVisitors()
         .then(all => { 
             download(req, res, 'visitor', all)

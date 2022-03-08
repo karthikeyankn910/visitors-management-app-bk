@@ -118,7 +118,7 @@ router.post('/login',
             return res.status(400).json({"message": "invalid password"})
         }
         
-        const token = jwt.sign({"id": req.body.id}, process.env.JWT_SECRET_KEY, {expiresIn: '1h'});
+        const token = jwt.sign({"id": req.body.id}, process.env.JWT_SECRET_KEY, {expiresIn: '1d'});
         res.header('auth-token', token).send(token);
         // res.status(200).json({"message": "logged in"});
 })
