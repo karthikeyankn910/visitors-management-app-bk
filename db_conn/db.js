@@ -3,8 +3,7 @@ const Visitor = require('../models/Visitor');
 const Branch = require('./../models/Branch');
 const Employee = require('./../models/Employee');
 const Admin = require('./../models/Admin');
-const dotenv = require('dotenv')
-
+const dotenv = require('dotenv') 
 
 
 dotenv.config();

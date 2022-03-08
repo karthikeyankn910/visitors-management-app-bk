@@ -25,6 +25,7 @@ loginBtn.addEventListener('click', (event) => {
         "password": "karthik",
     };
     req.send(JSON.stringify(credentials));
+    alert("You have logged in successfully for 10s");
 });
 
 
@@ -43,9 +44,9 @@ exportBtn.addEventListener('click', (event) => {
     req.open('GET', `http://localhost:4000/api/v1/${selectedValue}/download`, true); 
     req.setRequestHeader('Content-type', 'application/json');
     req.setRequestHeader('Content-Disposition', 'attachment');
-    req.setRequestHeader('auth-token', JSON.parse(localStorage.getItem('credentials')));
-    // window.location.replace(`http://localhost:4000/api/v1/${selectedValue}/download`)
+    req.setRequestHeader('auth-token', JSON.parse(localStorage.getItem('credentials'))); 
     req.send(); 
+    
 }); 
 
 

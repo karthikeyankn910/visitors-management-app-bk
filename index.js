@@ -3,11 +3,11 @@ const dotEnv = require('dotenv').config();
 const { sequelize } = require('./db_conn/db');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 const branchRoute = require('./routes/branchRoute');
 const employeeRoute = require('./routes/employeeRoute');
 const visitorRoute = require('./routes/visitorRoute');
 const adminRoute = require('./routes/adminRoute');
-const rateLimit = require('express-rate-limit');
 const cluster = require('cluster');
 const process = require('process');
 const os = require('os');
@@ -48,7 +48,7 @@ app.use(cors({ origin: "http://localhost:3000"}));
 
 //setting pug view engine to express app
 app.set('view engine', 'pug');
-app.set('views', './components/html');
+app.set('views', './components');
 
 
 //database authentication
@@ -84,7 +84,7 @@ app.get('/api/v1/download', (req, res) => {
 //middlewares for each models 
 app.use('/api/v1/admin', adminRoute);
 app.use('/api/v1/branches', verifyToken, branchRoute); 
-app.use('/api/v1/employees', verifyToken, employeeRoute);
+app.use('/api/v1/employees', verifyToken, employeeRoute); 
 app.use('/api/v1/visitors', verifyToken, visitorRoute);
  
  
@@ -113,7 +113,7 @@ const numCpus = os.cpus().length;
  
 
  
-//set api key for sgMail
+// set api key for sgMail
 // sgMail.setApiKey(process.env.SG_API_KEY); 
   
  
