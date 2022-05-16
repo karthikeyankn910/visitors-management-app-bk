@@ -1,64 +1,64 @@
-# version: '3.7'
-# services:
-
-#   redis:
-#     image: redis
-#     environment:
-#       - ALLOW_EMPTY_PASSWORD=yes
-#     ports:
-#       - "6379:6379"
-#     command: redis-server --appendonly yes
-
-#   app: #this service is for my node app
-#     build: .
-#     depends_on:
-#       - redis
-#       - postgres #postgres service(below service)
-#     ports:
-#       - "4000:4000" #actual port in nodejs 4000 and mapped to 4000 in container
-#     environment: 
-#       #original credentials for my machine
-#       - DB_USERNAME=admin5
-#       - DB_PASSWORD=admin5
-#       - DB_SCHEMA=visitors_management
-#       - DB_HOST=postgres
-#       - PORT=4000
-#       - REDIS_URL=redis:6379 
-#       - REDIS_HOST=redis 
-#       - REDIS_PORT=6379
-#     volumes:
-#       #WORKDIR in container
-#       - ./:/usr/src/app/
-
-#   postgres:
-#     image: postgres 
-#     environment:
-#       - POSTGRES_USER=admin5
-#       - POSTGRES_PASSWORD=admin5
-#       - POSTGRES_DB=visitors_management  
-#     ports:
-#       - "35432:5432" 
-
-
-version: "3.7"
+version: '3.7'
 services:
-  zookeeper:
-    image: 'bitnami/zookeeper:latest'
-    ports:
-      - '2181:2181'
+
+  redis:
+    image: redis
     environment:
-      - ALLOW_ANONYMOUS_LOGIN=yes
-      
-  kafka:
-    image: 'bitnami/kafka:latest'
-    container_name: 'kafka'
+      - ALLOW_EMPTY_PASSWORD=yes
     ports:
-      - '9092:9092'
-    environment:
-      - KAFKA_BROKER_ID=1
-      - KAFKA_LISTENERS=PLAINTEXT://:9092
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://127.0.0.1:9092
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-      - ALLOW_PLAINTEXT_LISTENER=yes
+      - "6379:6379"
+    command: redis-server --appendonly yes
+
+  app: #this service is for my node app
+    build: .
     depends_on:
-      - zookeeper
+      - redis
+      - postgres #postgres service(below service)
+    ports:
+      - "4000:4000" #actual port in nodejs 4000 and mapped to 4000 in container
+    environment: 
+      #original credentials for my machine
+      - DB_USERNAME=admin5
+      - DB_PASSWORD=admin5
+      - DB_SCHEMA=visitors_management
+      - DB_HOST=postgres
+      - PORT=4000
+      - REDIS_URL=redis:6379 
+      - REDIS_HOST=redis 
+      - REDIS_PORT=6379
+    volumes:
+      #WORKDIR in container
+      - ./:/usr/src/app/
+
+  postgres:
+    image: postgres 
+    environment:
+      - POSTGRES_USER=admin5
+      - POSTGRES_PASSWORD=admin5
+      - POSTGRES_DB=visitors_management  
+    ports:
+      - "35432:5432" 
+
+
+# version: "3.7"
+# services:
+#   zookeeper:
+#     image: 'bitnami/zookeeper:latest'
+#     ports:
+#       - '2181:2181'
+#     environment:
+#       - ALLOW_ANONYMOUS_LOGIN=yes
+      
+#   kafka:
+#     image: 'bitnami/kafka:latest'
+#     container_name: 'kafka'
+#     ports:
+#       - '9092:9092'
+#     environment:
+#       - KAFKA_BROKER_ID=1
+#       - KAFKA_LISTENERS=PLAINTEXT://:9092
+#       - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://127.0.0.1:9092
+#       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+#       - ALLOW_PLAINTEXT_LISTENER=yes
+#     depends_on:
+#       - zookeeper

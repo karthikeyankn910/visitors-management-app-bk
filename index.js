@@ -67,14 +67,14 @@ sequelize.sync({});
 //sample GET request for cluster and testing....ignore it
 app.get('/', (req, res) => {
     res.send(`Yes it's working by ${process.pid}`);
-    cluster.worker.kill();
+    // cluster.worker.kill();
 });
 
  
 
 
 app.get('/api/v1/download', (req, res) => {
-    const datas = {
+    const datas = { 
         models: ['visitors', 'branches', 'employees'],
     }
     res.render('downloadPage', {datas});

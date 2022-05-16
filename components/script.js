@@ -21,8 +21,8 @@ loginBtn.addEventListener('click', (event) => {
     req.open('POST', `http://localhost:4000/api/v1/admin/login`, true);
     req.setRequestHeader('Content-type', 'application/json');
     let credentials = {
-        "email": "karthik@gmail.com",
-        "password": "karthik",
+        "email": "test@gmail.com",
+        "password": "test",
     };
     req.send(JSON.stringify(credentials));
     alert("You have logged in successfully for 10s");
